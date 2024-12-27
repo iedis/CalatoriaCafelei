@@ -6,6 +6,7 @@
         private:
             int id;
             std::string name;
+            std::string job;
             int shiftStart;
             int shiftEnd;
         public:
@@ -42,6 +43,10 @@
         {
             return this->shiftEnd;
         }
+            std::string getJob()
+            {
+                return this->job;
+            }
 //display information
     //AICI am folosit ABSTRACTIZARE
             virtual void info() = 0;
@@ -56,6 +61,8 @@
 //AICI am folosit MOSTENIRE
     class Manager: public Employee
     {
+        private:
+            std::string job = "Manager";
         public:
             void info()
             {
@@ -69,6 +76,8 @@
 
     class Barista: public Employee
     {
+        private:
+            std::string job = "Barista";
         public:
             void info()
             {
@@ -82,6 +91,8 @@
 
     class Waiter: public Employee
     {
+        private:
+            std::string job = "Waiter";
         public:
             void info()
             {
