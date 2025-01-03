@@ -238,6 +238,44 @@
                 file << "Profits: " << this->profits(payDay) << " RON" << std::endl;
                 file.close();
             }
+//daily report in Romanian
+            void dailyReportRomanian(int payDay)
+            {
+                std::ofstream file("RaportZilnic.txt");
+                int i, profits = 0;
+                file << "Raportul zilei de azi: " << std::endl;
+                file << "----------------------------------------------" << std::endl;
+                file << "Costuri: " << std::endl;
+                file << "Costuri de productie: " << this->myStock.calculateProductionCost() << " RON"<< std::endl;
+                file << "----------------------------------------------" << std::endl;
+                file << "Venituri: " << std::endl;
+                file << "Totalul tuturor comenzilor plasate azi: " << this->orderIncome() << " RON"<< std::endl;
+                file << "----------------------------------------------" << std::endl;
+                file << "Salarii: " << std::endl;
+                file << "Manager: " << this->myManager.getWage() << std::endl;
+                file << "Barista: " << std::endl;
+                for(int i = 0; i < this->myBaristas.size(); i ++)
+                {
+                    file << "Id: " << this->myBaristas[i].getId() << " - " << this->myBaristas[i].getWage() << std::endl;
+                }
+                file << "Chelneri: " << std::endl;
+                for(int i = 0; i < this->myWaiters.size(); i ++)
+                {
+                    file << "Id: " << this->myWaiters[i].getId() << " - " << this->myWaiters[i].getWage() << std::endl;
+                }
+                file << "----------------------------------------------" << std::endl;
+                int payDay = 0;
+                std::cout << "Este azi zi de plata? (1/0)" << std::endl;
+                std::cin >> payDay;
+                while(payDay != 0 && payDay != 1)
+                {
+                    std::cout << "Ai introdus gresit! Alege 1 pentru DA si 0 pentru NU" << std::endl;
+                    std::cout << "Este azi zi de plata? (1/0)" << std::endl;
+                    std::cin >> payDay;
+                }
+                file << "Profit: " << this->profits(payDay) << " RON" << std::endl;
+                file.close();
+            }
 //special events
         
     };
