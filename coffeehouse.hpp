@@ -111,11 +111,11 @@
                     {
                         myBaristas.push_back(newEmployee);
                     }
-                    else if(newEmployee.getJob() == "Waiter")
+                    else if(newEmployee.getJob() == "Waiter" || newEmployee.getJob() == "Chelner")
                     {
                         myWaiters.push_back(newEmployee);
                     }
-                    throw "Wrong job title. Try again";
+                    throw "Wrong job title (Denumire job gresita). Try again (Reincearca).";
                 }
                 catch(std::string msg)
                 {
@@ -124,7 +124,45 @@
                 }
             }
 //fire employee
-
+            template <typename T>
+            void fireEmployee(T firedEmployee)
+            {
+                try
+                {
+                    if(firedEmployee.getJob() == "Manager")
+                    {
+                        this->myManager.fireEmployee();
+                    }
+                    else if(firedEmployee.getJob() == "Barista")
+                    {
+                        for(int i = 0; i < this->myBaristas.size(); i ++)
+                        {
+                            if(this->myBaristas[i].getId == firedEmployee.getId())
+                            {
+                                this->myBaristas.erase(find(this->myBaristas.begin(),this->myBaristas.end(), firedEmployee.getId()));
+                                i = this->myBaristas.size();
+                            }
+                        }
+                    }
+                    else if(firedEmployee.getJob() == "Waiter" || firedEmployee.getJob() == "Chelner")
+                    {
+                        for(int i = 0; i < this->myWaiters.size(); i ++)
+                        {
+                            if(this->myWaiters[i].getId == firedEmployee.getId())
+                            {
+                                this->myWaiters.erase(find(this->myWaiters.begin(),this->myWaiters.end(), firedEmployee.getId()));
+                                i = this->myWaiters.size();
+                            }
+                        }
+                    }
+                    throw "Wrong job title (Denumire job gresita). Try again (Reincearca).";
+                }
+                catch(std::string msg)
+                {
+                    cout << "------------------------------------------" << std::endl;
+                    cout << msg << std::endl;
+                }
+            }
 //daily raport
 
 //special events
