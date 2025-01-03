@@ -52,6 +52,7 @@
         private:
             std::vector<Product> myProducts;
             std::vector<int> myQuantities;
+            int productionCost;
         public:
 //getters and setters
             void setOneProduct(Product newProduct)
@@ -78,6 +79,10 @@
             {
                 return this->myQuantities;
             }
+            int getProductionCost()
+            {
+                return this->productionCost;
+            }
 //delete product
             void removeProduct(Product oldProduct)
             {
@@ -87,5 +92,15 @@
             void addProduct(Product newProduct)
             {
                 myProducts.push_back(newProduct);
+                int i = this->myProducts.size() - 1;
+                this->productionCost += this->myProducts[i].getProductionCost() * this->myQuantities[i];
+            }
+//calculate production cost of current stock
+            void calculateProductionCost()
+            {
+                for(int i = 0; i < this->myProducts.size(); i ++)
+                {
+                    this->productionCost += this->myProducts[i].getProductionCost() * this->myQuantities[i];
+                }
             }
     };
