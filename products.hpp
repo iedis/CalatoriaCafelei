@@ -96,11 +96,12 @@
                 this->productionCost += this->myProducts[i].getProductionCost() * this->myQuantities[i];
             }
 //calculate production cost of current stock
-            void calculateProductionCost()
+            int calculateProductionCost()
             {
                 for(int i = 0; i < this->myProducts.size(); i ++)
                 {
                     this->productionCost += this->myProducts[i].getProductionCost() * this->myQuantities[i];
                 }
+                return this->productionCost;
             }
     };
