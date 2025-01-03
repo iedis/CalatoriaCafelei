@@ -1,4 +1,5 @@
     #include <iostream> 
+    #include <fstream>
     #include <string>
     #include <vector>
     #include "employees.hpp"
@@ -163,8 +164,80 @@
                     cout << msg << std::endl;
                 }
             }
-//daily raport
-
+//calculate total income from orders
+            int orderIncome()
+            {
+                int income = 0;
+                for(int i = 0; i < this->myOrders.size(); i ++)
+                {
+                    income += this->myOrders[i].getTotal();
+                }
+                return income;
+            }
+//calculate total sum of wages
+            int allWages()
+            {
+                int sum = 0;
+                sum += this->myManager.getWage();
+                for(int i = 0; i < this->myBaristas.size(); i++)
+                {
+                    sum += this->myBaristas[i].getWage();
+                }
+                for(int i = 0; i < this->myWaiters.size(); i++)
+                {
+                    sum += this->myWaiters[i].getWage();
+                }
+                return sum;
+            }
+//calculate profits for the day
+            int profits(int payDay)
+            {
+                int profit;
+                profit = this->orderIncome() - this->myStock.calculateProductionCost();
+                if(payDay == 1)
+                {
+                    profit -= this->allWages();
+                }
+                return profit;
+            }
+//daily report in English
+            void dailyReportEnglish(int payDay)
+            {
+                std::ofstream file("TodaysReport.txt");
+                int i, profits = 0;
+                file << "Today's Report: " << std::endl;
+                file << "----------------------------------------------" << std::endl;
+                file << "Costs: " << std::endl;
+                file << "Production costs: " << this->myStock.calculateProductionCost() << " RON"<< std::endl;
+                file << "----------------------------------------------" << std::endl;
+                file << "Income: " << std::endl;
+                file << "Total of all orders placed today is: " << this->orderIncome() << " RON"<< std::endl;
+                file << "----------------------------------------------" << std::endl;
+                file << "Wages: " << std::endl;
+                file << "Manager: " << this->myManager.getWage() << std::endl;
+                file << "Baristas: " << std::endl;
+                for(int i = 0; i < this->myBaristas.size(); i ++)
+                {
+                    file << "Id: " << this->myBaristas[i].getId() << " - " << this->myBaristas[i].getWage() << std::endl;
+                }
+                file << "Waiters: " << std::endl;
+                for(int i = 0; i < this->myWaiters.size(); i ++)
+                {
+                    file << "Id: " << this->myWaiters[i].getId() << " - " << this->myWaiters[i].getWage() << std::endl;
+                }
+                file << "----------------------------------------------" << std::endl;
+                int payDay = 0;
+                std::cout << "Is today a pay day? (1/0)" << std::endl;
+                std::cin >> payDay;
+                while(payDay != 0 && payDay != 1)
+                {
+                    std::cout << "Wrong input! Choose 1 for YES and 0 for NO" << std::endl;
+                    std::cout << "Is today a pay day? (1/0)" << std::endl;
+                    std::cin >> payDay;
+                }
+                file << "Profits: " << this->profits(payDay) << " RON" << std::endl;
+                file.close();
+            }
 //special events
         
     };
