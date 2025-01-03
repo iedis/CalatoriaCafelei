@@ -62,16 +62,7 @@
             {
                 return this->totalValue;
             }
-//calculate total value of order
-            int caluclateTotalValue()
-            {
-                int i, sum = 0;
-                for(i = 0; i < this->products.size();i ++)
-                {
-                    sum += this->quantity[i] * this->products[i].getPrice();
-                }
-                return sum;
-            }
+
 //apply customer discount
             int discount(int sum)
             {
@@ -83,5 +74,15 @@
                 }
                 return sum;
             }
-    
+//calculate total value of order
+            int caluclateTotalValue()
+            {
+                int i, sum = 0, discount;
+                for(i = 0; i < this->products.size();i ++)
+                {
+                    sum += this->quantity[i] * this->products[i].getPrice();
+                }
+                this->totalValue = sum;
+                return this->discount(sum);
+            }
     };
