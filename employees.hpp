@@ -9,6 +9,7 @@
             std::string job;
             int shiftStart;
             int shiftEnd;
+            int wage;
         public:
 //getters and setters
             void setId(int id)
@@ -26,6 +27,10 @@
             void setShiftEnd(int end)
             {
                 this->shiftEnd = end;
+            }
+            void setWage(int wage)
+            {
+                this->wage = wage;
             }
             int getId()
             {
@@ -47,6 +52,10 @@
             {
                 return this->job;
             }
+            int getWage()
+            {
+                return this->wage;
+            }
 //display information
     //AICI am folosit ABSTRACTIZARE
             virtual void info() = 0;
@@ -55,6 +64,15 @@
             {
                 this->shiftStart = newStart;
                 this->shiftEnd = newEnd;
+            }
+//fire employee
+            void fireEmployee()
+            {
+                this->setId(0);
+                this->setName("");
+                this->setShiftEnd(0);
+                this->setShiftStart(0);
+                this->wage = 0;
             }
     };
 
