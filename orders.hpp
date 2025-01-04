@@ -9,6 +9,7 @@
         private:
             int id;
             Client client;
+            int nrOfProducts;
             std::vector<Product> products;
             std::vector<int> quantity;
             int totalValue;
@@ -42,6 +43,10 @@
             {
                 this->totalValue = total;
             }
+            void setNrOfProducts(int nr)
+            {
+                this->nrOfProducts = nr;
+            }
             int getId()
             {
                 return this->id;
@@ -62,7 +67,10 @@
             {
                 return this->totalValue;
             }
-
+            int getNrOfProducts()
+            {
+                return this->nrOfProducts;
+            }
 //apply customer discount
             int discount(int sum)
             {
