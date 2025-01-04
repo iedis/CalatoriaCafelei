@@ -1,4 +1,5 @@
     #include <iostream> 
+    #include <fstream>
     #include <string>
     #include <vector>
     #define SPACE 50
@@ -44,7 +45,28 @@
             int getProductionCost()
             {
                 return this->productionCost;
-            }
+            }    
+//assign attributes from a csv line
+            void assignProduct(std::string line)
+            {
+                int location;
+
+                location = line.find(',');
+                this->id = (stoi(line.substr(0, location)));
+                line = line.substr(location + 1, line.length());
+
+                location = line.find(',');
+                this->name = (line.substr(0, location));
+                line = line.substr(location + 1, line.length());
+
+                location = line.find(',');
+                this->price = (stoi(line.substr(0, location)));
+                line = line.substr(location + 1, line.length());
+
+                location = line.find(',');
+                this->productionCost = (stoi(line.substr(0, location)));
+                line = line.substr(location + 1, line.length());
+            }            
     };
 
     class Stock
@@ -104,4 +126,42 @@
                 }
                 return this->productionCost;
             }
+//read stock from file
+            void readStock(std::string& fileName)
+            {
+                std::ifstream file(fileName);
+                if(!file)
+                {
+                    std::cout << "The products file could not be opened! (Fisierul de produse nu a putut fi deschis)" << std::endl;
+                    return;
+                }
+                Product temp;
+                std::string line = "";
+                int location;
+                while(getline(file, line))
+                {
+                    location = line.find(',');
+                    temp.setId(stoi(line.substr(0, location)));
+                    line = line.substr(location + 1, line.length());
+
+                    location = line.find(',');
+                    temp.setName(line.substr(0, location));
+                    line = line.substr(location + 1, line.length());
+
+                    location = line.find(',');
+                    temp.setPrice(stoi(line.substr(0, location)));
+                    line = line.substr(location + 1, line.length());
+
+                    location = line.find(',');
+                    temp.setProductionCost(stoi(line.substr(0, location)));
+                    line = line.substr(location + 1, line.length());  
+
+                    this->myProducts.push_back(temp); 
+
+                    location = line.find(',');
+                    this->myQuantities.push_back(stoi(line.substr(0, location)));
+                    line = line.substr(location + 1, line.length());                 
+                }
+                file.close();
+            }    
     };
