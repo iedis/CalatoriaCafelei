@@ -302,18 +302,19 @@
             }
 //special events
 
-//read from stock file
-            void readStock(std::string& fileName)
+//read from order file
+            void readOrder(std::string& fileName)
             {
                 std::ifstream file(fileName);
                 if(!file)
                 {
-                    std::cout << "The products file could not be opened! (Fisierul de produse nu a putut fi deschis)" << std::endl;
+                    std::cout << "The orders file could not be opened! (Fisierul de comenzi nu a putut fi deschis)" << std::endl;
                     return;
                 }
-                Product temp;
+                Order temp;
+                Client auxClient;
                 std::string line = "";
-                int location;
+                int location, aux;
                 while(getline(file, line))
                 {
                     location = line.find(',');
@@ -321,23 +322,40 @@
                     line = line.substr(location + 1, line.length());
 
                     location = line.find(',');
-                    temp.setName(line.substr(0, location));
+                    auxClient.setName(line.substr(0, location));
                     line = line.substr(location + 1, line.length());
 
                     location = line.find(',');
-                    temp.setPrice(stoi(line.substr(0, location)));
+                    auxClient.setNOrders(stoi(line.substr(0, location)));
                     line = line.substr(location + 1, line.length());
+
+                    temp.setClient(auxClient);
+                    
+                    location = line.find(',');
+                    temp.setNrOfProducts(stoi(line.substr(0, location)));
+                    line = line.substr(location + 1, line.length());
+
+                    std::vector<Product> currentProducts = this->myStock.getAllProducts();
+                    for(int i = 0; i < temp.getNrOfProducts(); i ++)
+                    {
+                        location = line.find(',');
+                        for(int j = 0; j < currentProducts.size(); j ++)
+                        {
+                            if(currentProducts[j].getName() == line.substr(0, location))
+                            {
+                                temp.setOneProduct(currentProducts[j]);
+                                line = line.substr(location + 1, line.length()); 
+                                j = currentProducts.size();
+                            }
+                        }
+                    }
 
                     location = line.find(',');
-                    temp.setProductionCost(stoi(line.substr(0, location)));
-                    line = line.substr(location + 1, line.length());
+                    temp.setTotalValue(stoi(line.substr(0, location)));
+                    line = line.substr(location + 1, line.length());  
 
-                    this->myStock.setOneProduct(temp);
-
-                    location = line.find(',');
-                    this->myStock.setOneQuantity(stoi(line.substr(0, location)));
-                    line = line.substr(location + 1, line.length());
+                    this->myOrders.push_back(temp);    
                 }
+                file.close();
             }
-
     };
