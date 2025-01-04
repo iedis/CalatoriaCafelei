@@ -6,6 +6,9 @@
     #include "products.hpp"
     #include "clients.hpp"
     #include "orders.hpp"
+    #include "specialEvents.hpp"
+
+    #define NPROD 20
 
     class CoffeeHouse
     {
@@ -16,6 +19,7 @@
             std::vector<int> myWages;
             Stock myStock;
             std::vector<Order> myOrders;
+            SeasonalMenu currentSeasonalMenu;
         public:
 //getters and setters
             void setManager(Manager manager)
@@ -58,6 +62,12 @@
             {
                 this->myOrders = orders;
             }
+            void setSeasonalMenu(std::vector<Product> seasonalProducts, int sDay, int sMonth, int sYear, int eDay, int eMonth, int eYear)
+            {
+                this->currentSeasonalMenu.setProducts(seasonalProducts);
+                this->currentSeasonalMenu.setStartDate(sDay, sMonth, sYear);
+                this->currentSeasonalMenu.setEndDate(eDay, eMonth, eYear);
+            }
             Manager getManager()
             {
                 return this->myManager;
@@ -97,6 +107,10 @@
             std::vector<Order> getOrders()
             {
                 return this->myOrders;
+            }
+            SeasonalMenu getSeasonalMenu()
+            {
+                return currentSeasonalMenu;
             }
 //hire new empolyee
             template <typename T>
@@ -204,6 +218,11 @@
             void dailyReportEnglish(int payDay)
             {
                 std::ofstream file("TodaysReport.txt");
+                if(!file)
+                {
+                    std::cout << "The file could not be opened! Please try again" << std::endl;
+                    return;
+                }
                 int i, profits = 0;
                 file << "Today's Report: " << std::endl;
                 file << "----------------------------------------------" << std::endl;
@@ -242,6 +261,11 @@
             void dailyReportRomanian(int payDay)
             {
                 std::ofstream file("RaportZilnic.txt");
+                if(!file)
+                {
+                    std::cout << "Fisierul nu a putut fi deschis! Incearca din nou" << std::endl;
+                    return;
+                }
                 int i, profits = 0;
                 file << "Raportul zilei de azi: " << std::endl;
                 file << "----------------------------------------------" << std::endl;
@@ -277,5 +301,43 @@
                 file.close();
             }
 //special events
-        
+
+//read from stock file
+            void readStock(std::string& fileName)
+            {
+                std::ifstream file(fileName);
+                if(!file)
+                {
+                    std::cout << "The products file could not be opened! (Fisierul de produse nu a putut fi deschis)" << std::endl;
+                    return;
+                }
+                Product temp;
+                std::string line = "";
+                int location;
+                while(getline(file, line))
+                {
+                    location = line.find(',');
+                    temp.setId(stoi(line.substr(0, location)));
+                    line = line.substr(location + 1, line.length());
+
+                    location = line.find(',');
+                    temp.setName(line.substr(0, location));
+                    line = line.substr(location + 1, line.length());
+
+                    location = line.find(',');
+                    temp.setPrice(stoi(line.substr(0, location)));
+                    line = line.substr(location + 1, line.length());
+
+                    location = line.find(',');
+                    temp.setProductionCost(stoi(line.substr(0, location)));
+                    line = line.substr(location + 1, line.length());
+
+                    this->myStock.setOneProduct(temp);
+
+                    location = line.find(',');
+                    this->myStock.setOneQuantity(stoi(line.substr(0, location)));
+                    line = line.substr(location + 1, line.length());
+                }
+            }
+
     };
