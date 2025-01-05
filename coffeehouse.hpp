@@ -3,13 +3,10 @@
     #include <string>
     #include <vector>
     #include "employees.hpp"
-    #include "products.hpp"
-    #include "clients.hpp"
-    #include "orders.hpp"
     #include "specialEvents.hpp"
 
     #define NPROD 20
-
+//AICI am folosit DESIGN PATTERNS: FACADE
     class CoffeeHouse
     {
         private:
@@ -112,70 +109,61 @@
             {
                 return currentSeasonalMenu;
             }
+//constructor
+            CoffeeHouse(){}
 //hire new empolyee
+        //AICI am folosit TEMPLATES
             template <typename T>
-            void hireEmployee(T newEmployee)
+            void hireEmployee(T newEmployee, std::string fileName)
             {
+        //AICI am folosit EXCEPTII
                 try
                 {
-                    if(newEmployee.getJob() == "Manager")
+                    std::ofstream file;
+                    file.open(fileName, std::ios::app);
+                    if(!file)
                     {
-                        myManager = newEmployee;
+                        throw "The employees file could not be opened! (Fisierul de angajati nu a putut fi deschis)";
                     }
-                    else if(newEmployee.getJob() == "Barista")
-                    {
-                        myBaristas.push_back(newEmployee);
-                    }
-                    else if(newEmployee.getJob() == "Waiter" || newEmployee.getJob() == "Chelner")
-                    {
-                        myWaiters.push_back(newEmployee);
-                    }
-                    throw "Wrong job title (Denumire job gresita). Try again (Reincearca).";
+                    file << std::endl << newEmployee.getId() << "," << newEmployee.getName() << "," << newEmployee.getJob() << "," 
+                    << newEmployee.getShiftStart() << "," << newEmployee.getShiftEnd() << "," << newEmployee.getWage();
+                    file.close();
                 }
                 catch(std::string msg)
                 {
-                    cout << "------------------------------------------" << std::endl;
-                    cout << msg << std::endl;
+                    std::cout << "------------------------------------------" << std::endl;
+                    std::cout << msg << std::endl;
                 }
             }
-//fire employee
-            template <typename T>
-            void fireEmployee(T firedEmployee)
+//rewrite employee file
+            void rewriteEmployee(Manager newManager,std::vector<Waiter> newWaiters,std::vector<Barista> newBaristas, std::string fileName)
             {
                 try
                 {
-                    if(firedEmployee.getJob() == "Manager")
+                    std::ofstream file;
+                    file.open(fileName);
+                    if(!file)
                     {
-                        this->myManager.fireEmployee();
+                        throw "The employee file could not be opened! (Fisierul de angajati nu a putut fi deschis)";
                     }
-                    else if(firedEmployee.getJob() == "Barista")
+                    file << newManager.getId() << "," << newManager.getName() << "," << newManager.getJob() << "," 
+                    << newManager.getShiftStart() << "," << newManager.getShiftEnd() << "," << newManager.getWage();
+                    for(int i = 0; i < newBaristas.size(); i ++)
                     {
-                        for(int i = 0; i < this->myBaristas.size(); i ++)
-                        {
-                            if(this->myBaristas[i].getId == firedEmployee.getId())
-                            {
-                                this->myBaristas.erase(find(this->myBaristas.begin(),this->myBaristas.end(), firedEmployee.getId()));
-                                i = this->myBaristas.size();
-                            }
-                        }
+                        file << std::endl << newBaristas[i].getId() << "," << newBaristas[i].getName() << "," << newBaristas[i].getJob() << "," 
+                        << newBaristas[i].getShiftStart() << "," << newBaristas[i].getShiftEnd() << "," << newBaristas[i].getWage();
                     }
-                    else if(firedEmployee.getJob() == "Waiter" || firedEmployee.getJob() == "Chelner")
+                    for(int i = 0; i < newWaiters.size(); i ++)
                     {
-                        for(int i = 0; i < this->myWaiters.size(); i ++)
-                        {
-                            if(this->myWaiters[i].getId == firedEmployee.getId())
-                            {
-                                this->myWaiters.erase(find(this->myWaiters.begin(),this->myWaiters.end(), firedEmployee.getId()));
-                                i = this->myWaiters.size();
-                            }
-                        }
+                        file << std::endl << newWaiters[i].getId() << "," << newWaiters[i].getName() << "," << newWaiters[i].getJob() << "," 
+                        << newWaiters[i].getShiftStart() << "," << newWaiters[i].getShiftEnd() << "," << newWaiters[i].getWage();
                     }
-                    throw "Wrong job title (Denumire job gresita). Try again (Reincearca).";
+                    file.close();
                 }
                 catch(std::string msg)
                 {
-                    cout << "------------------------------------------" << std::endl;
-                    cout << msg << std::endl;
+                    std::cout << "------------------------------------------" << std::endl;
+                    std::cout << msg << std::endl;
                 }
             }
 //calculate total income from orders
@@ -215,7 +203,7 @@
                 return profit;
             }
 //daily report in English
-            void dailyReportEnglish(int payDay)
+            void dailyReportEnglish()
             {
                 std::ofstream file("TodaysReport.txt");
                 if(!file)
@@ -245,8 +233,8 @@
                     file << "Id: " << this->myWaiters[i].getId() << " - " << this->myWaiters[i].getWage() << std::endl;
                 }
                 file << "----------------------------------------------" << std::endl;
-                int payDay = 0;
                 std::cout << "Is today a pay day? (1/0)" << std::endl;
+                int payDay;
                 std::cin >> payDay;
                 while(payDay != 0 && payDay != 1)
                 {
@@ -258,7 +246,7 @@
                 file.close();
             }
 //daily report in Romanian
-            void dailyReportRomanian(int payDay)
+            void dailyReportRomanian()
             {
                 std::ofstream file("RaportZilnic.txt");
                 if(!file)
@@ -358,4 +346,78 @@
                 }
                 file.close();
             }
+//read from eployees file    
+            void readEmployees(std::string& fileName)
+            {
+                std::ifstream file(fileName);
+                if(!file)
+                {
+                    std::cout << "The orders file could not be opened! (Fisierul de comenzi nu a putut fi deschis)" << std::endl;
+                    return;
+                }
+                std::string line = "";
+                int location;
+                int tempId, tempStart, tempEnd, tempWage;
+                std::string tempName, tempJob;
+                while(getline(file,line))
+                {
+                    location = line.find(',');
+                    tempId = (stoi(line.substr(0, location)));
+                    line = line.substr(location + 1, line.length());
+
+                    location = line.find(',');
+                    tempName = line.substr(0, location);
+                    line = line.substr(location + 1, line.length());
+
+                    location = line.find(',');
+                    tempJob = line.substr(0, location);
+                    line = line.substr(location + 1, line.length());
+
+                    location = line.find(',');
+                    tempStart = (stoi(line.substr(0, location)));
+                    line = line.substr(location + 1, line.length());
+
+                    location = line.find(',');
+                    tempEnd = (stoi(line.substr(0, location)));
+                    line = line.substr(location + 1, line.length());
+
+                    location = line.find(',');
+                    tempWage = (stoi(line.substr(0, location)));
+                    line = line.substr(location + 1, line.length());
+
+                    if(tempJob ==  "Manager")
+                    {
+                        this->myManager.setId(tempId);
+                        this->myManager.setName(tempName);
+                        this->myManager.setJob(tempJob);
+                        this->myManager.setShiftStart(tempStart);
+                        this->myManager.setShiftEnd(tempEnd);
+                        this->myManager.setWage(tempWage);
+                    }
+                    else if(tempJob == "Barista")
+                    {
+                        Barista b;
+                        b.setId(tempId);
+                        b.setName(tempName);
+                        b.setJob(tempJob);
+                        b.setShiftStart(tempStart);
+                        b.setShiftEnd(tempEnd);
+                        b.setWage(tempWage);
+                        this->myBaristas.push_back(b);
+                    }
+                    else
+                    {
+                        Waiter w;
+                        w.setId(tempId);
+                        w.setName(tempName);
+                        w.setJob(tempJob);
+                        w.setShiftStart(tempStart);
+                        w.setShiftEnd(tempEnd);
+                        w.setWage(tempWage);
+                        this->myWaiters.push_back(w);
+                    }
+                }
+                file.close();
+            }
+
     };
