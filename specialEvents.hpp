@@ -9,6 +9,8 @@
             std::vector<Product> seasonalProducts;
             int startDate;//format an,luna,zi
             int endDate;//idem startDate
+            int marketingCost;
+            int totalProductionCost;
         public:
     //getters and setters
             void setOneProduct(Product newProduct)
@@ -31,6 +33,10 @@
                 this->endDate += month * 100;
                 this->endDate += day;
             }
+            void setMarketingCost(int cost)
+            {
+                this->marketingCost = cost;
+            }
             Product getOneProduct(int id)
             {
                 return this->seasonalProducts[id - 1];
@@ -46,5 +52,17 @@
             int getEndDate()
             {
                 return this->endDate;
+            }
+            int getMarketingcost()
+            {
+                return this->marketingCost;
+            }
+    //calculate total production cost
+            void calculateTotalProdCost()
+            {
+                for(int i = 0; i < this->seasonalProducts.size(); i++)
+                {
+                    this->totalProductionCost += this->seasonalProducts[i].getProductionCost();
+                }
             }
     };
