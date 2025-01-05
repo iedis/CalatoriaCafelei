@@ -24,18 +24,17 @@
     int main()
     {
         CoffeeHouse location;
-        string employeesFile, ordersFile, stockFile;
-        int city = 0, option = 0, i, index;
-        int tempId, tempStart, tempEnd, tempWage;
-        string tempName, tempJob;
+        string employeesFile, ordersFile, stockFile, clientName, productName, tempName, tempJob;
+        int city = 0, option = 0, i, index, tempId, tempStart, tempEnd, tempWage;
         vector<Waiter> auxWaiters;
         vector<Barista> auxBaristas;
         vector<Product> auxProducts;
+        Product auxProduct;
         vector<int> auxQuantities;
         vector<Product> currentProducts;
         Order auxOrder;
         Client auxClient;
-        string clientName, productName;
+        Stock auxStock;
         cout << "----------------------------------------------" << endl;
         cout << "Welcome! (Bine ai venit!)" << endl;
         while(city < 1 || city > 5)
@@ -217,6 +216,7 @@
                     location.readEmployees(employeesFile);
                     break;
                 case 4:
+                    auxStock = location.getStock();
                     int orderNr, clientOrders, prodNr, q;
                     currentProducts = location.getStock().getAllProducts();
                     cout << "----------------------------------------------" << endl;
@@ -247,6 +247,7 @@
                             if(currentProducts[j].getName() == productName)
                             {
                                 auxOrder.setOneProduct(currentProducts[j]); 
+                                auxStock.changeQuantity(currentProducts[j].getId(),-q);
                                 j = currentProducts.size();
                             }
                         }
@@ -254,9 +255,71 @@
                     auxOrder.caluclateTotalValue();
                     location.setOneOrder(auxOrder);
                     location.writeOrder(auxOrder, ordersFile);
+                    location.setStock(auxStock);
+                    location.rewriteStock(auxStock,stockFile);
                     break;
                 case 5:
-                    
+                    int k, tempPrice, tempProdCost, tempQ;
+                    cout << "----------------------------------------------" << endl;
+                    cout << "You chose: Change stock information (Ati ales: Schimbati informatiile legate de stoc)" << endl;
+                    cout << "Please choose an option: (Va rog sa alegeti o optiune)" << endl;
+                    cout << "1. Add product (Adaugare produs)" << endl;
+                    cout << "2. Remove product (Eliminare produs)" << endl;
+                    cout << "3. Add to quantity (Adaugare  cantitate)" << endl;
+                    cout << "4. Remove from quantity (Scadere cantitate)" << endl;
+                    cin >> k;
+                    auxStock = location.getStock();
+                    switch (k)
+                    {
+                    case 1:
+                        cout << "Adding a new product (Adaugare produs nou)" << endl;
+                        cout << "Id: " << endl;
+                        cin >> tempId;
+                        cout << "Name: (Nume:)" << endl;
+                        cin >> tempName;
+                        cout << "Price: (Pret:)" << endl;
+                        cin >> tempPrice;
+                        cout << "Production cost: (Cost de productie:)" << endl;
+                        cin >> tempProdCost;
+                        cout << "Quantity: (Cantitate:)" << endl;
+                        cin >> tempQ;
+                        auxProduct.init(tempId, tempName, tempPrice, tempProdCost);
+                        auxStock.addProduct(auxProduct, tempQ);
+                        location.setStock(auxStock);
+                        location.rewriteStock(auxStock,stockFile);
+                        break;
+                    case 2:
+                        cout << "Removing a product: (Elimiarea unui produs)" << endl;
+                        cout << "What is the id of the product you want to remove? (Care este Id-ul produsului?)" << endl;
+                        cin >> tempId;
+                        auxStock.removeProduct(tempId);
+                        location.setStock(auxStock);
+                        location.rewriteStock(auxStock,stockFile);
+                        break;
+                    case 3:
+                        cout << "Adding to quantity (Adaugare de cantitate)" << endl;
+                        cout << "Id of product (Id-ul produsului)" << endl;
+                        cin >> tempId;
+                        cout << "Quantity to be added (Cantitatea de adaugat)" << endl;
+                        cin >> tempQ;
+                        auxStock.changeQuantity(tempId, tempQ);
+                        location.setStock(auxStock);
+                        location.rewriteStock(auxStock,stockFile);
+                        break;
+                    case 4:
+                        cout << "Removing from quantity (Scadere de cantitate)" << endl;
+                        cout << "Id of product (Id-ul produsului)" << endl;
+                        cin >> tempId;
+                        cout << "Quantity to be removed (Cantitatea de eliminat)" << endl;
+                        cin >> tempQ;
+                        auxStock.changeQuantity(tempId, -tempQ);
+                        location.setStock(auxStock);
+                        location.rewriteStock(auxStock,stockFile);
+                        break;
+                    default:
+                        cout << "Wrong option (Optiune inexistanta)" << endl;
+                        break;
+                    }
                     break;
                 case 6:
 
