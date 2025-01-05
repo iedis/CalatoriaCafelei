@@ -30,6 +30,12 @@
         string tempName, tempJob;
         vector<Waiter> auxWaiters;
         vector<Barista> auxBaristas;
+        vector<Product> auxProducts;
+        vector<int> auxQuantities;
+        vector<Product> currentProducts;
+        Order auxOrder;
+        Client auxClient;
+        string clientName, productName;
         cout << "----------------------------------------------" << endl;
         cout << "Welcome! (Bine ai venit!)" << endl;
         while(city < 1 || city > 5)
@@ -83,7 +89,7 @@
 //read from files for chose location
         location.readEmployees(employeesFile);
         location.readOrder(ordersFile);
-        location.getStock().readStock(stockFile);
+        location.readStock(stockFile);
 //implement user menu
         cout << "----------------------------------------------" << endl;
         while(option < 1 || option > 8)
@@ -178,7 +184,7 @@
                 case 3:
                     int newStart, newEnd;
                     cout << "----------------------------------------------" << endl;
-                    cout << "You chose: Change an employees schedule (Schimbati programul unui angajat)" << endl;
+                    cout << "You chose: Change an employees schedule (Ati ales: Schimbati programul unui angajat)" << endl;
                     cout << "What is the job title of the employee you want to fire? (Ce slujba are angajatul?)" << endl;
                     cin >> tempJob;
                     cout << "Enter the Id of the employee you want to fire (Introduceti Id-ul angajatului pe care doriti sa il concediati)" << endl;
@@ -211,7 +217,43 @@
                     location.readEmployees(employeesFile);
                     break;
                 case 4:
-
+                    int orderNr, clientOrders, prodNr, q;
+                    currentProducts = location.getStock().getAllProducts();
+                    cout << "----------------------------------------------" << endl;
+                    cout << "You chose: New order (Ati ales: Introduceti o noua comanda)" << endl;
+                    cout << "Please complete the form below: (Completati cu datele corespunzatoare:)" << endl;
+                    cout << "Order number: (Numarul comenzii:)" << endl;
+                    cin >> orderNr;
+                    auxOrder.setId(orderNr);
+                    cout << "Client name: (Nume client: )" << endl;
+                    cin >> clientName;
+                    auxClient.setName(clientName);
+                    cout << "Number of previous orders: (Numarul de comezi anterioare:)" << endl;
+                    cin >> clientOrders;
+                    auxClient.setNOrders(clientOrders);
+                    auxOrder.setClient(auxClient);
+                    cout << "Number of types of products: (Numarul de tipuri de produse:)" << endl;
+                    cin >> prodNr;
+                    auxOrder.setNrOfProducts(prodNr);
+                    for(i = 0; i < prodNr; i++)
+                    {
+                        cout << "Quantity of product (Cantitatea produsului)" << endl;
+                        cin >> q;
+                        auxOrder.setOneQuantity(q);
+                        cout << "Name of products (Numele produsului)" << endl;
+                        cin >> productName;
+                        for(int j = 0; j < currentProducts.size(); j ++)
+                        {
+                            if(currentProducts[j].getName() == productName)
+                            {
+                                auxOrder.setOneProduct(currentProducts[j]); 
+                                j = currentProducts.size();
+                            }
+                        }
+                    }
+                    auxOrder.caluclateTotalValue();
+                    location.setOneOrder(auxOrder);
+                    location.writeOrder(auxOrder, ordersFile);
                     break;
                 case 5:
                     
