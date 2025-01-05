@@ -36,12 +36,12 @@
             }
             std::string getName()
             {
-                this->name;
+                return this->name;
             }
             int getPrice()
-        {
+            {
             return this->price;
-        }
+            }
             int getProductionCost()
             {
                 return this->productionCost;
@@ -108,7 +108,13 @@
 //delete product
             void removeProduct(Product oldProduct)
             {
-                myProducts.erase(find(myProducts.begin(), myProducts.end(), oldProduct));
+                for(int i = 0; i < this->myProducts.size(); i ++)
+                {
+                    if(this->myProducts[i].getId() == oldProduct.getId())
+                    {
+                        this->myProducts.erase(this->myProducts.begin() + i);
+                    }
+                }
             }
 //add new product
             void addProduct(Product newProduct)
