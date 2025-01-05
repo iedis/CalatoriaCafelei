@@ -32,6 +32,10 @@
             {
                 this->wage = wage;
             }
+            void setJob(std::string job)
+            {
+                this->job = job;
+            }
             int getId()
             {
                 return this->id;
@@ -80,7 +84,7 @@
     class Manager: public Employee
     {
         private:
-            std::string job = "Manager";
+            
         public:
             void info()
             {
@@ -90,12 +94,26 @@
                 std::cout << "Name: " << getName() << std::endl;
                 std::cout << "Shift: " << getShiftStart() << " - " << getShiftEnd() << std::endl;
             }
+//AICI am folosit CONSTRUCTORI
+            Manager(int id, std::string name, std::string job,int start, int end, int wage)
+            {
+                this->setId(id);
+                this->setName(name);
+                this->setJob(job);
+                this->setShiftStart(start);
+                this->setShiftEnd(end);
+                this->setWage(wage);
+            }
+            Manager()
+            {
+
+            }
     };
 
     class Barista: public Employee
     {
         private:
-            std::string job = "Barista";
+            
         public:
             void info()
             {
@@ -105,12 +123,22 @@
                 std::cout << "Name: " << getName() << std::endl;
                 std::cout << "Shift: " << getShiftStart() << " - " << getShiftEnd() << std::endl;
             }
+            Barista(int id, std::string name, std::string job,int start, int end, int wage)
+            {
+                this->setId(id);
+                this->setName(name);
+                this->setJob(job);
+                this->setShiftStart(start);
+                this->setShiftEnd(end);
+                this->setWage(wage);
+            }
+            Barista(){}
     };
 
     class Waiter: public Employee
     {
         private:
-            std::string job = "Waiter";
+            
         public:
             void info()
             {
@@ -120,4 +148,14 @@
                 std::cout << "Name: " << getName() << std::endl;
                 std::cout << "Shift: " << getShiftStart() << " - " << getShiftEnd() << std::endl;
             }
+            Waiter(int id, std::string name, std::string job,int start, int end, int wage)
+            {
+                this->setId(id);
+                this->setName(name);
+                this->setJob(job);
+                this->setShiftStart(start);
+                this->setShiftEnd(end);
+                this->setWage(wage);
+            }
+            Waiter(){}
     };
