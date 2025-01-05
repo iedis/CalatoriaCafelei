@@ -66,7 +66,15 @@
                 location = line.find(',');
                 this->productionCost = (stoi(line.substr(0, location)));
                 line = line.substr(location + 1, line.length());
-            }            
+            }
+//initialize product
+            void init(int id, std::string name, int price, int cost)
+            {
+                this->id = id;
+                this->name = name;
+                this->price = price;
+                this->productionCost = cost;
+            }                
     };
 
     class Stock
@@ -106,68 +114,45 @@
                 return this->productionCost;
             }
 //delete product
-            void removeProduct(Product oldProduct)
+            void removeProduct(int id)
             {
                 for(int i = 0; i < this->myProducts.size(); i ++)
                 {
-                    if(this->myProducts[i].getId() == oldProduct.getId())
+                    if(this->myProducts[i].getId() == id)
                     {
                         this->myProducts.erase(this->myProducts.begin() + i);
                     }
                 }
             }
 //add new product
-            void addProduct(Product newProduct)
+            void addProduct(Product newProduct, int q)
             {
                 myProducts.push_back(newProduct);
-                int i = this->myProducts.size() - 1;
-                this->productionCost += this->myProducts[i].getProductionCost() * this->myQuantities[i];
+                this->myQuantities.push_back(q);
+                this->productionCost += newProduct.getProductionCost() * q;
             }
 //calculate production cost of current stock
             int calculateProductionCost()
             {
+                int cost = 0;
                 for(int i = 0; i < this->myProducts.size(); i ++)
                 {
-                    this->productionCost += this->myProducts[i].getProductionCost() * this->myQuantities[i];
+                    cost += this->myProducts[i].getProductionCost() * this->myQuantities[i];
                 }
-                return this->productionCost;
+                return cost;
             }
-//read stock from file
-            void readStock(std::string& fileName)
+//change quantity
+            void changeQuantity(int id, int quantity)
             {
-                std::ifstream file(fileName);
-                if(!file)
+                int index;
+                for(int i = 0; i < this->myProducts.size(); i ++)
                 {
-                    std::cout << "The products file could not be opened! (Fisierul de produse nu a putut fi deschis)" << std::endl;
-                    return;
+                    if(this->myProducts[i].getId() == id)
+                    {
+                        index = i;
+                        i = this->myProducts.size();
+                    }
                 }
-                Product temp;
-                std::string line = "";
-                int location;
-                while(getline(file, line))
-                {
-                    location = line.find(',');
-                    temp.setId(stoi(line.substr(0, location)));
-                    line = line.substr(location + 1, line.length());
-
-                    location = line.find(',');
-                    temp.setName(line.substr(0, location));
-                    line = line.substr(location + 1, line.length());
-
-                    location = line.find(',');
-                    temp.setPrice(stoi(line.substr(0, location)));
-                    line = line.substr(location + 1, line.length());
-
-                    location = line.find(',');
-                    temp.setProductionCost(stoi(line.substr(0, location)));
-                    line = line.substr(location + 1, line.length());  
-
-                    this->myProducts.push_back(temp); 
-
-                    location = line.find(',');
-                    this->myQuantities.push_back(stoi(line.substr(0, location)));
-                    line = line.substr(location + 1, line.length());                 
-                }
-                file.close();
-            }    
+                this->myQuantities[index] = this->myQuantities[index] + quantity;
+            }
     };
