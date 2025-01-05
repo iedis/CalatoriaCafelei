@@ -24,8 +24,8 @@
     int main()
     {
         CoffeeHouse location;
-        string employeesFile, ordersFile, stockFile, clientName, productName, tempName, tempJob;
-        int city = 0, option = 0, i, index, tempId, tempStart, tempEnd, tempWage;
+        string employeesFile, ordersFile, stockFile, clientName, productName, tempName, tempJob, name;
+        int city = 0, option = 0, i, index, tempId, tempStart, tempEnd, tempWage, tempPrice, tempProdCost;
         vector<Waiter> auxWaiters;
         vector<Barista> auxBaristas;
         vector<Product> auxProducts;
@@ -35,6 +35,7 @@
         Order auxOrder;
         Client auxClient;
         Stock auxStock;
+        SeasonalMenu auxSeasonalMenu;
         cout << "----------------------------------------------" << endl;
         cout << "Welcome! (Bine ai venit!)" << endl;
         while(city < 1 || city > 5)
@@ -87,8 +88,8 @@
         }
 //read from files for chose location
         location.readEmployees(employeesFile);
-        location.readOrder(ordersFile);
         location.readStock(stockFile);
+        location.readOrder(ordersFile);
 //implement user menu
         cout << "----------------------------------------------" << endl;
         while(option < 1 || option > 8)
@@ -226,7 +227,8 @@
                     cin >> orderNr;
                     auxOrder.setId(orderNr);
                     cout << "Client name: (Nume client: )" << endl;
-                    cin >> clientName;
+                    cin.ignore();
+                    getline(cin,clientName);
                     auxClient.setName(clientName);
                     cout << "Number of previous orders: (Numarul de comezi anterioare:)" << endl;
                     cin >> clientOrders;
@@ -241,7 +243,8 @@
                         cin >> q;
                         auxOrder.setOneQuantity(q);
                         cout << "Name of products (Numele produsului)" << endl;
-                        cin >> productName;
+                        cin.ignore();
+                        getline(cin,productName);
                         for(int j = 0; j < currentProducts.size(); j ++)
                         {
                             if(currentProducts[j].getName() == productName)
@@ -259,7 +262,7 @@
                     location.rewriteStock(auxStock,stockFile);
                     break;
                 case 5:
-                    int k, tempPrice, tempProdCost, tempQ;
+                    int k, tempQ;
                     cout << "----------------------------------------------" << endl;
                     cout << "You chose: Change stock information (Ati ales: Schimbati informatiile legate de stoc)" << endl;
                     cout << "Please choose an option: (Va rog sa alegeti o optiune)" << endl;
@@ -322,10 +325,63 @@
                     }
                     break;
                 case 6:
-
+                    int nrSeasonProd, marketingCost, day, month, year;
+                    auxStock = location.getStock();
+                    auxProducts.clear();
+                    auxQuantities.clear();
+                    cout << "----------------------------------------------" << endl;
+                    cout << "You chose: Create seasonal menu (Ati ales: Creati meniu de sezon)" << endl;
+                    cout << "How many seasonal product do you want to add? (Cate produse de sezon doriti sa adaugati?)" << endl;
+                    cin >> nrSeasonProd;
+                    cout << "Start date: (year/month/day) (Data de inceput (an/luna/zi))" << endl;
+                    cin >> year >> month >> day;
+                    auxSeasonalMenu.setStartDate(day, month, year);
+                    cout << "End date: (year/month/day) (Data de final (an/luna/zi))" << endl;
+                    cin >> year >> month >> day;
+                    auxSeasonalMenu.setEndDate(day, month, year);
+                    cout << "What is the marketing cost? (Care este costul de marketing?)" << endl;
+                    cin >> marketingCost;
+                    for(i = 0; i < nrSeasonProd; i++)
+                    {
+                        cout << "Id: " << endl;
+                        cin >> tempId;
+                        cout << "Price: (Pret:)" << endl;
+                        cin >> tempPrice;
+                        cout << "Production cost: (Cost de productie:)" << endl;
+                        cin >> tempProdCost;
+                        cout << "Name: (Nume:)" << endl;
+                        cin.ignore();
+                        getline(cin, name);
+                        auxProduct.init(tempId,name,tempPrice,tempProdCost);
+                        auxProducts.push_back(auxProduct);
+                    }
+                    auxSeasonalMenu.setProducts(auxProducts);
+                    auxSeasonalMenu.setMarketingCost(marketingCost);
+                    location.setSeasonalMenu(auxSeasonalMenu);
                     break;
                 case 7:
-                    
+                    int langOption, payDay;
+                    cout << "----------------------------------------------" << endl;
+                    cout << "You chose: Daily report (Ati ales: Raport zilnic)" << endl;
+                    cout << "Choose the language: (Alege limba:)" << endl;
+                    cout << "1. English" << endl;
+                    cout << "2. Romana" << endl;
+                    cin >> langOption;
+                    location.readStock(stockFile);
+                    location.readOrder(ordersFile);
+                    location.readEmployees(employeesFile);
+                    if(langOption == 1)
+                    {
+                        cout << location.getBaristas().size() << endl;
+                        location.dailyReportEnglish();
+                    }
+                    else if(langOption == 2)
+                    {
+                        location.dailyReportRomanian();
+                    }
+                    else{
+                        cout << "Choose a valid number! (Alege o optiune valida!)" << endl;
+                    }
                     break;
                 case 8:
                     cout << "Goodbye! (La revedere!)" << endl;
