@@ -1,11 +1,11 @@
-1,cappuccino,10,4,11
-2,esspreso,7,3,12
-3,latte,10,4,9
+1,cappuccino,10,4,12
+2,esspreso,7,3,11
+3,latte,10,4,5
 4,chai latte,12,5,10
-5,matcha latte,12,5,10
+5,matcha latte,12,5,9
 6,flat white,10,4,17
 7,ceai,5,2,10
-8,ciocolata calda,12,5,10
+8,ciocolata calda,12,5,11
 9,tort ciocolata,12,5,20
 10,rulou scortisoara,8,5,25
 11,croissant,8,4,19
@@ -18,3 +18,4 @@
 18,sandwich falafel,17,10,7
 19,salata caesar,20,11,5
 20,salata greceasca,18,10,5
+21,test,20,10,2

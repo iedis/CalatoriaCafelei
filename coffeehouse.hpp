@@ -59,11 +59,9 @@
             {
                 this->myOrders = orders;
             }
-            void setSeasonalMenu(std::vector<Product> seasonalProducts, int sDay, int sMonth, int sYear, int eDay, int eMonth, int eYear)
+            void setSeasonalMenu(SeasonalMenu newMenu)
             {
-                this->currentSeasonalMenu.setProducts(seasonalProducts);
-                this->currentSeasonalMenu.setStartDate(sDay, sMonth, sYear);
-                this->currentSeasonalMenu.setEndDate(eDay, eMonth, eYear);
+                this->currentSeasonalMenu = newMenu;
             }
             Manager getManager()
             {
@@ -166,13 +164,67 @@
                     std::cout << msg << std::endl;
                 }
             }
+//write new order to file
+            void writeOrder(Order newOrder, std::string& fileName)
+            {
+                try
+                {
+
+                    std::ofstream file;
+                    file.open(fileName, std::ios::app);
+                    if(!file)
+                    {
+                        throw "The employee file could not be opened! (Fisierul de angajati nu a putut fi deschis)";
+                    }
+                    file << std::endl << newOrder.getId() << "," << newOrder.getClient().getName() << "," <<newOrder.getClient().getNOrders() << ","
+                    << newOrder.getNrOfProducts() << ",";
+                    for(int i = 0; i < newOrder.getAllProducts().size(); i ++)
+                    {
+                        file << newOrder.getAllQuantities()[i] << ",";
+                        file << newOrder.getAllProducts()[i].getName() << ",";
+                    }
+                    file << newOrder.getTotal();
+                }
+                catch(std::string msg)
+                {
+                    std::cout << "------------------------------------------" << std::endl;
+                    std::cout << msg << std::endl;
+                }
+                
+            }
+//rewrite stock file
+            void rewriteStock(Stock newStock,std::string& fileName)
+            {
+                try
+                {
+                    std::ofstream file;
+                    file.open(fileName);
+                    if(!file)
+                    {
+                        throw "The stock file could not be opened! (Fisierul de angajati nu a putut fi deschis)";
+                    }
+                    file << newStock.getAllProducts()[0].getId() << "," << newStock.getAllProducts()[0].getName() << ","
+                    << newStock.getAllProducts()[0].getPrice() << "," << newStock.getAllProducts()[0].getProductionCost() << "," << newStock.getAllQuantities()[0];
+                    for(int i = 1; i < newStock.getAllProducts().size(); i ++)
+                    {
+                        file << std::endl << newStock.getAllProducts()[i].getId() << "," << newStock.getAllProducts()[i].getName() << ","
+                        << newStock.getAllProducts()[i].getPrice() << "," << newStock.getAllProducts()[i].getProductionCost() << "," << newStock.getAllQuantities()[i];
+                    }
+                    file.close();
+                }
+                catch(std::string msg)
+                {
+                    std::cout << "------------------------------------------" << std::endl;
+                    std::cout << msg << std::endl;
+                }
+            }
 //calculate total income from orders
             int orderIncome()
             {
                 int income = 0;
                 for(int i = 0; i < this->myOrders.size(); i ++)
                 {
-                    income += this->myOrders[i].getTotal();
+                    income += myOrders[i].getTotal();
                 }
                 return income;
             }
@@ -293,6 +345,7 @@
 //read from order file
             void readOrder(std::string& fileName)
             {
+                this->myOrders.clear();
                 std::ifstream file(fileName);
                 if(!file)
                 {
@@ -327,6 +380,9 @@
                     for(int i = 0; i < temp.getNrOfProducts(); i ++)
                     {
                         location = line.find(',');
+                        temp.setOneQuantity(stoi(line.substr(0, location)));
+                        line = line.substr(location + 1, line.length());
+                        location = line.find(',');
                         for(int j = 0; j < currentProducts.size(); j ++)
                         {
                             if(currentProducts[j].getName() == line.substr(0, location))
@@ -349,6 +405,8 @@
 //read from eployees file    
             void readEmployees(std::string& fileName)
             {
+                this->myBaristas.clear();
+                this->myWaiters.clear();
                 std::ifstream file(fileName);
                 if(!file)
                 {
@@ -419,5 +477,44 @@
                 }
                 file.close();
             }
+//read stock from file
+            void readStock(std::string& fileName)
+            {
+                this->myStock.getAllProducts().clear();
+                this->myStock.getAllQuantities().clear();
+                std::ifstream file(fileName);
+                if(!file)
+                {
+                    std::cout << "The products file could not be opened! (Fisierul de produse nu a putut fi deschis)" << std::endl;
+                    return;
+                }
+                Product temp;
+                std::string line = "";
+                int location;
+                while(getline(file, line))
+                {
+                    location = line.find(',');
+                    temp.setId(stoi(line.substr(0, location)));
+                    line = line.substr(location + 1, line.length());
 
+                    location = line.find(',');
+                    temp.setName(line.substr(0, location));
+                    line = line.substr(location + 1, line.length());
+
+                    location = line.find(',');
+                    temp.setPrice(stoi(line.substr(0, location)));
+                    line = line.substr(location + 1, line.length());
+
+                    location = line.find(',');
+                    temp.setProductionCost(stoi(line.substr(0, location)));
+                    line = line.substr(location + 1, line.length());  
+
+                    this->myStock.setOneProduct(temp); 
+
+                    location = line.find(',');
+                    this->myStock.setOneQuantity(stoi(line.substr(0, location)));
+                    line = line.substr(location + 1, line.length());                 
+                }
+                file.close();
+            }  
     };
