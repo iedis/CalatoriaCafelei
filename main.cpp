@@ -120,7 +120,8 @@
                     cout << "Id: " << endl;
                     cin >> tempId;
                     cout << "Name: (Nume:) " << endl;
-                    cin >> tempName;
+                    cin.ignore();
+                    getline(cin,tempName);
                     cout << "Job title: (Denumire job:)" << endl;
                     cin >> tempJob;
                     cout << "Start of shift: (Inceutul turei)" << endl;
@@ -279,7 +280,8 @@
                         cout << "Id: " << endl;
                         cin >> tempId;
                         cout << "Name: (Nume:)" << endl;
-                        cin >> tempName;
+                        cin.ignore();
+                        getline(cin,tempName);
                         cout << "Price: (Pret:)" << endl;
                         cin >> tempPrice;
                         cout << "Production cost: (Cost de productie:)" << endl;
