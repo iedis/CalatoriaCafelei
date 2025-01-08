@@ -374,7 +374,6 @@
                     location.readEmployees(employeesFile);
                     if(langOption == 1)
                     {
-                        cout << location.getBaristas().size() << endl;
                         location.dailyReportEnglish();
                     }
                     else if(langOption == 2)
